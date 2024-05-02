@@ -57,5 +57,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUD_FLARE_DEPLOY_API_TOKEN }}
           accountId: ${{ secrets.CLOUD_FLARE_DEPLOY_ACCOUNT_ID }}
-          command: pages deploy ./client/dist --project-name=web3-project2 --commit-dirty=true
+          command: pages deploy ./dennis_lee_web3_project_2/dist --project-name=web3-project2 --commit-dirty=true
           quiet: false
