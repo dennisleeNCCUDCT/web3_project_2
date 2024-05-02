@@ -1,0 +1,61 @@
+name: (Production)Deploy client to Cloudflare Pages
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - dennis_lee_web3_project_2/**
+    
+  pull_request:
+    branches:
+      - main
+    paths:
+      - dennis_lee_web3_project_2/**
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'  # Use a stable LTS version of Node.js
+
+      - name: Install dependencies
+        working-directory: ./dennis_lee_web3_project_2
+        run: npm install 
+
+      - name: Print environment details
+        run: |
+          echo "Node version:"
+          node --version
+          echo "NPM version:"
+          npm --version
+          echo "Current directory:"
+          pwd
+          echo "List files:"
+          ls -alh
+
+    
+
+      - name: Build
+        env:
+          NUXT_PUBLIC_API_BASE: ''
+        working-directory: ./dennis_lee_web3_project_2
+        run: npm run build
+        continue-on-error: true
+
+      - name: Install Wrangler
+        run: npm install -g wrangler 
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUD_FLARE_DEPLOY_API_TOKEN }}
+          accountId: ${{ secrets.CLOUD_FLARE_DEPLOY_ACCOUNT_ID }}
+          command: pages deploy ./client/dist --project-name=web3-project2 --commit-dirty=true
+          quiet: false
